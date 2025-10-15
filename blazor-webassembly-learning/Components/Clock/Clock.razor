@@ -1,7 +1,63 @@
-﻿<h3>Clock</h3>
+﻿<div>
+    <h3>Clock</h3>
 
-
+    <div class="clock">
+        <div class="clock-minute-face" style="transform: rotate(@curSecondRotation)"></div>
+        <div class="clock-minute-face" style="transform: rotate(@curMinuteRotation)"></div>
+    </div>
+</div>
 
 @code {
+    string currentTime;    
+    Timer updateTimer;
+
+    string curSecondRotation = "0deg";
+    string curMinuteRotation = "0deg";
     
+    int secondsElapsed = 0;
+    float minutesElapsed = 0;
+
+    private void UpdateClockRotation()
+    {
+
+        if (secondsElapsed == 0)
+        {
+            secondsElapsed = DateTime.Now.Second;
+        }
+        else
+        {
+            secondsElapsed += 1;
+        }
+
+        if (minutesElapsed == 0)
+        {
+            minutesElapsed = DateTime.Now.Minute;
+        }
+        else
+        {
+            minutesElapsed += 1 / 60f;
+        }
+        
+        curSecondRotation = $"{secondsElapsed*6}deg";
+        curMinuteRotation = $"{minutesElapsed*6}deg";
+    }
+
+    protected override void OnInitialized()
+    {
+        updateTimer = new Timer(Tick, null, 0, 1000);        
+    }
+
+    private void Tick(object _)
+    {
+        currentTime = DateTime.Now.ToLongTimeString();
+        UpdateClockRotation();
+        InvokeAsync(StateHasChanged);
+
+        
+    }
+
+    public void Dispose()
+    {
+        updateTimer?.Dispose();
+    }
 }

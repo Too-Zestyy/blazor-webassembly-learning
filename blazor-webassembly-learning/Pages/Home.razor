@@ -4,28 +4,11 @@
 
 <h1>What's the time?</h1>
 <Clock></Clock>
-<p>
-    The time is @currentTime
-</p>
+@* <p> *@
+@*     The time is @currentTime *@
+@* </p> *@
 
 @code
 {
-    string currentTime;    
-    Timer updateTimer;
-
-    protected override void OnInitialized()
-    {
-        updateTimer = new Timer(Tick, null, 0, 1000);        
-    }
-
-    private void Tick(object _)
-    {
-        currentTime = DateTime.Now.ToLongTimeString();
-        InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        updateTimer?.Dispose();
-    }
+    
 }
