@@ -1,7 +1,31 @@
 ﻿@page "/"
+@using blazor_webassembly_learning.Components.Clock
+<PageTitle>Blazor WebAssembly App</PageTitle>
 
-<PageTitle>Home</PageTitle>
+<h1>What's the time?</h1>
+<Clock></Clock>
+<p>
+    The time is @currentTime
+</p>
 
-<h1>Hello, world!</h1>
+@code
+{
+    string currentTime;    
+    Timer updateTimer;
 
-Welcome to your new app.
+    protected override void OnInitialized()
+    {
+        updateTimer = new Timer(Tick, null, 0, 1000);        
+    }
+
+    private void Tick(object _)
+    {
+        currentTime = DateTime.Now.ToLongTimeString();
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        updateTimer?.Dispose();
+    }
+}
