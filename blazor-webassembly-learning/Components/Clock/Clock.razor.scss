@@ -2,6 +2,10 @@
 //  --minute-rotation: 0deg;
 //}
 
+ul {
+  list-style: none;
+}
+
 .clock {
   aspect-ratio: 1;
   width: 50%;
@@ -21,4 +25,83 @@
     background-color: black;
     background-image: conic-gradient(black, white);
     //transform: rotate(0deg);
+}
+
+// https://codepen.io/ahmadbassamemran/pen/WdKQyx
+.clock-minute-face ul li{
+  position: absolute;
+  width:20px;
+  height:20px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 10px;
+  color:red;
+}
+.clock-minute-face ul li:nth-child(1){
+  right: 22%;
+  top:6.5%;
+}
+.clock-minute-face ul li:nth-child(2){
+  right: 6%;
+  top:25%;
+}
+.clock-minute-face ul li:nth-child(3){
+  right: 1%;
+  top:calc(50% - 10px);
+  color:#000;
+  font-size: 20px;
+  font-weight: bold;
+}
+.clock-minute-face ul li:nth-child(4){
+  right: 6%;
+  top:69%;
+}
+.clock-minute-face ul li:nth-child(5){
+  right: 22%;
+  top:84%;
+}
+.clock-minute-face ul li:nth-child(6){
+  right: calc(50% - 10px);
+  top:calc(99% - 20px);
+  color:#000;
+  font-size: 20px;
+  font-weight: bold;
+}
+.clock-minute-face ul li:nth-child(7){
+  left: 22%;
+  top:84%;
+}
+.clock-minute-face ul li:nth-child(8){
+  left: 6%;
+  top:69%;
+}
+.clock-minute-face ul li:nth-child(9){
+  left: 1%;
+  top:calc(50% - 10px);
+  color:#000;
+  font-size: 20px;
+  font-weight: bold;
+}
+.clock-minute-face ul li:nth-child(10){
+  left: 6%;
+  top:25%;
+}
+.clock-minute-face ul li:nth-child(11){
+  left: 22%;
+  top:6.5%;
+}
+.clock-minute-face ul li:nth-child(12){
+  right: calc(50% - 10px);
+  top:1%;
+  color:#000;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+// TODO: Migrate element positioning to loop
+
+@for $i from 1 through 12 {
+  .clock-minute-face ul li:nth-child(#{$i}){
+    transform: rotate(calc((calc(360deg / 12) * $i - 1deg) + 180deg));
+  }
 }
