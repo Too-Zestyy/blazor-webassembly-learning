@@ -1,8 +1,18 @@
-﻿<div>
+﻿@using System.Diagnostics
+<div>
     <h3>Clock</h3>
 
     <div class="clock">
-        <div class="clock-minute-face" style="transform: rotate(@curSecondRotation)">
+        <div 
+            class="
+                    clock-minute-face
+                    @(hideAnimationsForSeconds ? "no-transition" : "")
+                " 
+            style="
+                transform: rotate(@curSecondRotation)
+                
+            "
+            >
             @* <p>1</p> *@
             @* <p>2</p> *@
             <ul>
@@ -34,38 +44,82 @@
     int secondsElapsed = 0;
     float minutesElapsed = 0;
 
-    private void UpdateClockRotation()
+    int curSecond = 0;
+    int curMinute = 0;
+
+    int fullTurns = 0;
+    
+    bool hideAnimationsForSeconds = true;
+
+    private void UpdateAbsoluteClockRotation()
     {
-
-        if (secondsElapsed == 0)
-        {
-            secondsElapsed = DateTime.Now.Second;
-        } else
-        {
-            secondsElapsed += 1;
-        }
-
-        if (minutesElapsed == 0)
-        {
-            minutesElapsed = DateTime.Now.Minute;
-        } else
-        {
-            minutesElapsed += 1 / 60f;
-        }
+        var curTime = DateTime.Now;
         
-        curSecondRotation = $"{secondsElapsed*6}deg";
-        curMinuteRotation = $"{minutesElapsed*6}deg";
+        // Prevents broken transition from last rotation before full rotation -> 0 degrees
+        if (curTime.Second - curSecond == -59)
+        {
+            fullTurns++;
+        }
+        curSecondRotation = GetRotationValueFromSixtieth(curTime.Second + fullTurns * 60);
+
+        curSecond = curTime.Second;
+    }
+
+    private string GetRotationValueFromUnit(float unit, int unitsInRotation)
+    {
+        var degreeValue = unit * (360f  /  unitsInRotation);
+        return $"{degreeValue}deg";
+    }
+    private string GetRotationValueFromSixtieth(float unit)
+    {
+        return GetRotationValueFromUnit(unit, 60);
+    }
+
+    // private void UpdateClockRotation()
+    // {
+    //
+    //     if (secondsElapsed == 0)
+    //     {
+    //         secondsElapsed = DateTime.Now.Second;
+    //     } else
+    //     {
+    //         secondsElapsed += 1;
+    //     }
+    //
+    //     if (minutesElapsed == 0)
+    //     {
+    //         minutesElapsed = DateTime.Now.Minute;
+    //     } else
+    //     {
+    //         minutesElapsed += 1 / 60f;
+    //     }
+    //     
+    //     curSecondRotation = $"{secondsElapsed*6}deg";
+    //     curMinuteRotation = $"{minutesElapsed*6}deg";
+    // }
+
+    private void InitialiseSeconds()
+    {
+        var curTime = DateTime.Now;
+        hideAnimationsForSeconds = true;
+        curSecondRotation = GetRotationValueFromSixtieth(curTime.Second);
+        StateHasChanged();
+        hideAnimationsForSeconds = false;
     }
 
     protected override void OnInitialized()
     {
+        // TODO: Prevent animation when setting up, then enable once done
+        InitialiseSeconds();
+        Tick(this);
+        hideAnimationsForSeconds = false;
         updateTimer = new Timer(Tick, null, 0, 1000);        
     }
 
     private void Tick(object _)
     {
-        currentTime = DateTime.Now.ToLongTimeString();
-        UpdateClockRotation();
+        UpdateAbsoluteClockRotation();
+        // UpdateClockRotation();
         InvokeAsync(StateHasChanged);
     }
 

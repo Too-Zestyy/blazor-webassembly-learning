@@ -10,10 +10,14 @@ ul {
   aspect-ratio: 1;
   width: 50%;
   background-color: gray;
-}
+} 
 
 @mixin clock-hand {
-  transition: all 0.1s cubic-bezier(0.49,0.06,0.54,2.17);
+  transition: all 0.075s cubic-bezier(0.49,0.06,0.54,2.17);
+}
+
+.no-transition {
+  transition: none !important;
 }
 
 .clock-minute-face {
@@ -102,6 +106,6 @@ ul {
 
 @for $i from 1 through 12 {
   .clock-minute-face ul li:nth-child(#{$i}){
-    transform: rotate(calc((calc(360deg / 12) * $i - 1deg) + 180deg));
+    transform: rotate(calc((calc(360deg / 12) * #{$i} - 1deg) + 180deg));
   }
 }
