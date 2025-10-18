@@ -111,20 +111,12 @@
         return GetRotationValueFromUnit(unit, 60);
     }
 
-    private void InitialiseSeconds()
-    {
-        var curTime = DateTime.Now;
-        hideAnimations = true;
-        curSecondRotation = GetRotationValueFromSixtieth(curTime.Second);
-        StateHasChanged();
-        hideAnimations = false;
-    }
-
     protected override void OnInitialized()
     {
         // TODO: Prevent animation when setting up, then enable once done
-        InitialiseSeconds();
+        hideAnimations = true;
         Tick(this);
+        StateHasChanged();
         hideAnimations = false;
         updateTimer = new Timer(Tick, null, 0, 1000);        
     }
