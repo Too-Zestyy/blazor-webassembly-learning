@@ -4,10 +4,7 @@
 
     <div class="clock">
         <div 
-            class="
-                    clock-minute-face
-                    @(hideAnimationsForSeconds ? "no-transition" : "")
-                " 
+            class=" clock-minute-face@(hideAnimations ? " no-transition" : "")" 
             style="
                 transform: rotate(@curSecondRotation)
                 
@@ -30,39 +27,78 @@
                 <li>12</li>
             </ul>
         </div>
-        <div class="clock-minute-face" style="transform: rotate(@curMinuteRotation)"></div>
+        <div class="clock-minute-face@(hideAnimations ? " no-transition" : "")" 
+             style="transform: rotate(@curMinuteRotation)"></div>
+        <div class="clock-minute-face@(hideAnimations ? " no-transition" : "")" 
+             style="transform: rotate(@curHourRotation)"></div>
     </div>
 </div>
 
-@code {
-    string currentTime;    
+@code {  
     Timer updateTimer;
 
     string curSecondRotation = "0deg";
     string curMinuteRotation = "0deg";
-    
-    int secondsElapsed = 0;
-    float minutesElapsed = 0;
+    string curHourRotation = "0deg";
 
-    int curSecond = 0;
-    int curMinute = 0;
+    int lastSecond = 0;
+    int lastMinute = 0;
+    int lastHour = 0;
 
-    int fullTurns = 0;
+    int fullSecondTurns = 0;
+    int fullMinuteTurns = 0;
+    int fullHourTurns = 0;
     
-    bool hideAnimationsForSeconds = true;
+    bool hideAnimations = true;
 
     private void UpdateAbsoluteClockRotation()
     {
         var curTime = DateTime.Now;
         
-        // Prevents broken transition from last rotation before full rotation -> 0 degrees
-        if (curTime.Second - curSecond == -59)
-        {
-            fullTurns++;
-        }
-        curSecondRotation = GetRotationValueFromSixtieth(curTime.Second + fullTurns * 60);
+        (curSecondRotation, fullSecondTurns) = GetUpdatedSecondSpinnerValues(
+            curTime.Second, 
+            lastSecond, 
+            fullSecondTurns
+            );
+        
+        (curMinuteRotation, fullMinuteTurns) = GetUpdatedMinuteSpinnerValues(
+            curTime.Minute * 60 + curTime.Second, 
+            lastMinute, 
+            fullMinuteTurns
+            );
+        (curHourRotation, fullHourTurns) = GetUpdatedHourSpinnerValues(
+            curTime.Hour * 3600 + curTime.Minute * 60 + curTime.Second, 
+            lastMinute, 
+            fullMinuteTurns
+        );
 
-        curSecond = curTime.Second;
+        lastSecond = curTime.Second;
+    }
+    
+    private (string, int) GetUpdatedHourSpinnerValues(int currentUnit, int oldUnit, int fullRotationCount)
+    {
+        return GetUpdatedClockSpinnerValues(currentUnit, oldUnit, fullRotationCount, 86400);
+    }
+    private (string, int) GetUpdatedMinuteSpinnerValues(int currentUnit, int oldUnit, int fullRotationCount)
+    {
+        return GetUpdatedClockSpinnerValues(currentUnit, oldUnit, fullRotationCount, 3600);
+    }
+    private (string, int) GetUpdatedSecondSpinnerValues(int currentUnit, int oldUnit, int fullRotationCount)
+    {
+        return GetUpdatedClockSpinnerValues(currentUnit, oldUnit, fullRotationCount, 60);
+    }
+
+    private (string, int) GetUpdatedClockSpinnerValues(int currentUnit, int oldUnit, int fullRotationCount, int maxUnits)
+    {
+        var updatedFullRotationCount = fullRotationCount;
+        if (currentUnit - oldUnit == (maxUnits - 1) * -1)
+        {
+            updatedFullRotationCount++;
+        }
+        
+        var newSpinnerValue = GetRotationValueFromUnit(currentUnit + updatedFullRotationCount * maxUnits, maxUnits);
+        
+        return (newSpinnerValue, updatedFullRotationCount);
     }
 
     private string GetRotationValueFromUnit(float unit, int unitsInRotation)
@@ -75,36 +111,13 @@
         return GetRotationValueFromUnit(unit, 60);
     }
 
-    // private void UpdateClockRotation()
-    // {
-    //
-    //     if (secondsElapsed == 0)
-    //     {
-    //         secondsElapsed = DateTime.Now.Second;
-    //     } else
-    //     {
-    //         secondsElapsed += 1;
-    //     }
-    //
-    //     if (minutesElapsed == 0)
-    //     {
-    //         minutesElapsed = DateTime.Now.Minute;
-    //     } else
-    //     {
-    //         minutesElapsed += 1 / 60f;
-    //     }
-    //     
-    //     curSecondRotation = $"{secondsElapsed*6}deg";
-    //     curMinuteRotation = $"{minutesElapsed*6}deg";
-    // }
-
     private void InitialiseSeconds()
     {
         var curTime = DateTime.Now;
-        hideAnimationsForSeconds = true;
+        hideAnimations = true;
         curSecondRotation = GetRotationValueFromSixtieth(curTime.Second);
         StateHasChanged();
-        hideAnimationsForSeconds = false;
+        hideAnimations = false;
     }
 
     protected override void OnInitialized()
@@ -112,7 +125,7 @@
         // TODO: Prevent animation when setting up, then enable once done
         InitialiseSeconds();
         Tick(this);
-        hideAnimationsForSeconds = false;
+        hideAnimations = false;
         updateTimer = new Timer(Tick, null, 0, 1000);        
     }
 
