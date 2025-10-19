@@ -11,59 +11,134 @@ ul {
   aspect-ratio: 1;
   width: 50%;
   background-color: gray;
+  
+  display: grid;
+  
+  align-items: center;
+  justify-items: center;
+  
 } 
+
+.clock .second-face, .clock .minute-face, .clock .hour-face {
+  grid-row: 1;
+  grid-column: 1;
+  //align-self: center;
+}
+
+.minute-face {
+  z-index: 3;
+}
+
+.hour-face {
+  z-index: 2;
+}
 
 @mixin clock-hand {
   transition: all 0.066s cubic-bezier(0.25,0.10,0.36,1.65);
+  aspect-ratio: 1;
 }
 
 .no-transition {
   transition: none !important;
 }
 
-.clock-minute-face {
-    @include clock-hand;
+@mixin small-clock-element {
+  @include clock-hand;
+  width: 20%;
+}
+
+@mixin medium-clock-element {
+  width: 40%;
+}
+// TODO: Decouple element sizing from parent - look into removing clock element?
+.clock-circular-face {
+    @include small-clock-element;
   
-    aspect-ratio: 1;
-    width: 20%;
     border-radius: 100%;
     background-color: black;
-    background-image: conic-gradient(black, white);
+    //background-image: conic-gradient(black, white);
+  
+  aspect-ratio: 1;
+  //width: 50%;
+
+    width: 30%;
+    //height: 50%;
     //transform: rotate(0deg);
 }
 
+.block-clock-face {
+  @include medium-clock-element;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  width: 100%;
+  height: 100%;
+  
+  //background-color: green;
+}
 
-.clock-minute-face ul {
+.block-clock-face div {
+  width: 2.5%;
+  height: 100%;
+  //background-color: black;
+  background-image: linear-gradient(
+                  0deg, transparent 25%, 
+                  white 0, white 50%, 
+                  black 0, black 75%, 
+                  white 0, white 100%
+  );
+}
+
+
+.clock-circular-face ul {
   text-align: center;
 }
 
-$number-width: 7.5%;
+$number-width: 25%;
 
-.clock-minute-face ul li {
+.clock-circular-face ul li {
   display: block;
   position: absolute;
+  text-align: center;
   width: $number-width;
 }
 
+@mixin place-clock-labels ($clock-name, $label-count: 12, $label-width: 20%, $circle-radius: 45%, $label-rotation: false) {
+  @for $i from 1 through $label-count {
+    .clock-#{$clock-name} ul li:nth-child(#{$i}){
+
+      bottom: calc(((
+      /* Find where in the circle to place the element */
+      cos(pi / (#{$label-count} / 2) 
+      /* Circle radius */
+            * (#{$i})) * #{$circle-radius})
+      /* Constant for alignment */
+      + (50% - 0.5em)));
+      left: calc(((
+      sin(pi / (#{$label-count} / 2) 
+            * (#{$i})) * #{$circle-radius})
+      + (50% - (#{$label-width} / 2))));
+      
+      @if ($label-rotation != false) {
+        transform: rotate(calc((calc(360deg / 12) * #{$i}) + #{$label-rotation}));
+      }
+
+    }
+  }
+}
+
+@include place-clock-labels(circular-face, 12, $number-width, 45%, 180deg);
+
 @for $i from 1 through 12 {
-  .clock-minute-face ul li:nth-child(#{$i}){
-    
+  .clock-circular-face ul li:nth-child(#{$i}){
+    color: white;
     @if($i % 3 == 0) {
-      color: blue;
       font-size: 13px;
     } @else {
-      color:red;
       font-size: 10px;
     }
-    
-    bottom: calc(((
-                cos(pi / 6 * (#{$i})) * 45%) 
-                + (50% - 0.5em)));
-    left: calc(((
-                sin(pi / 6 * (#{$i})) * 45%) 
-                + (50% - (#{$number-width} / 2))));
-
-    transform: rotate(calc((calc(360deg / 12) * #{$i} - 1deg) + 180deg));
 
   }
 }

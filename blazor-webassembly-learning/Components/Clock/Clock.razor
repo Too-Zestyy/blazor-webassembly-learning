@@ -3,10 +3,9 @@
     <h3>Clock</h3>
 
     <div class="clock">
-        <div 
-            class=" clock-minute-face@(hideAnimations ? " no-transition" : "")" 
-            style="transform: rotate(@curSecondRotation)"
-            >
+        <div
+            class="minute-face clock-circular-face@(hideAnimations ? " no-transition" : "")"
+            style="transform: rotate(@curSecondRotation)">
             <ul>
                 @for (var i = 1; i <= 12; i++)
                 {
@@ -15,10 +14,11 @@
                 }
             </ul>
         </div>
-        <div class="clock-minute-face@(hideAnimations ? " no-transition" : "")" 
-             style="transform: rotate(@curMinuteRotation)"></div>
-        <div class="clock-minute-face@(hideAnimations ? " no-transition" : "")" 
-             style="transform: rotate(@curHourRotation)"></div>
+        <div class="hour-face block-clock-face@(hideAnimations ? " no-transition" : "")"
+             style="transform: rotate(@curMinuteRotation)">
+            <div></div></div>
+        @* <div class="hour-face circular-clock-face@(hideAnimations ? " no-transition" : "")" *@
+        @*      style="transform: rotate(@curHourRotation)"></div> *@
     </div>
 </div>
 
