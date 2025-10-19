@@ -102,27 +102,28 @@ $number-width: 25%;
   display: block;
   position: absolute;
   text-align: center;
-  width: $number-width;
+  width: $number-width; 
 }
 
 @mixin place-clock-labels ($clock-name, $label-count: 12, $label-width: 20%, $circle-radius: 45%, $relative-label-rotation: false) {
   @for $i from 1 through $label-count {
     .clock-#{$clock-name} ul li:nth-child(#{$i}){
-
+      /* Find where in the circle to place the element, Circle radius and constant offset */
       bottom: calc(((
-      /* Find where in the circle to place the element */
+      
       cos(pi / (#{$label-count} / 2) 
-      /* Circle radius */
+      
             * (#{$i})) * #{$circle-radius})
-      /* Constant for alignment */
+      
       + (50% - 0.5em)));
+      
       left: calc(((
       sin(pi / (#{$label-count} / 2) 
             * (#{$i})) * #{$circle-radius})
       + (50% - (#{$label-width} / 2))));
       
-      @if ($label-rotation != false) {
-        transform: rotate(calc((calc(360deg / #{$label-count}) * #{$i}) + #{$label-rotation}));
+      @if ($relative-label-rotation != false) {
+        transform: rotate(calc((calc(360deg / #{$label-count}) * #{$i}) + #{$relative-label-rotation}));
       }
 
     }
