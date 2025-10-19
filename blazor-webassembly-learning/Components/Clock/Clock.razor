@@ -5,26 +5,14 @@
     <div class="clock">
         <div 
             class=" clock-minute-face@(hideAnimations ? " no-transition" : "")" 
-            style="
-                transform: rotate(@curSecondRotation)
-                
-            "
+            style="transform: rotate(@curSecondRotation)"
             >
-            @* <p>1</p> *@
-            @* <p>2</p> *@
             <ul>
-                <li>1</li>
-                <li>2</li>
-                <li>3</li>
-                <li>4</li>
-                <li>5</li>
-                <li>6</li>
-                <li>7</li>
-                <li>8</li>
-                <li>9</li>
-                <li>10</li>
-                <li>11</li>
-                <li>12</li>
+                @for (var i = 1; i <= 12; i++)
+                {
+                    var elementText = i * 5;
+                    <li>@elementText.ToString("D2")</li>
+                }
             </ul>
         </div>
         <div class="clock-minute-face@(hideAnimations ? " no-transition" : "")" 
@@ -75,17 +63,17 @@
         lastSecond = curTime.Second;
     }
     
-    private (string, int) GetUpdatedHourSpinnerValues(int currentUnit, int oldUnit, int fullRotationCount)
+    private (string, int) GetUpdatedSecondSpinnerValues(int currentUnit, int oldUnit, int fullRotationCount)
     {
-        return GetUpdatedClockSpinnerValues(currentUnit, oldUnit, fullRotationCount, 86400);
+        return GetUpdatedClockSpinnerValues(currentUnit, oldUnit, fullRotationCount, 60);
     }
     private (string, int) GetUpdatedMinuteSpinnerValues(int currentUnit, int oldUnit, int fullRotationCount)
     {
         return GetUpdatedClockSpinnerValues(currentUnit, oldUnit, fullRotationCount, 3600);
     }
-    private (string, int) GetUpdatedSecondSpinnerValues(int currentUnit, int oldUnit, int fullRotationCount)
+    private (string, int) GetUpdatedHourSpinnerValues(int currentUnit, int oldUnit, int fullRotationCount)
     {
-        return GetUpdatedClockSpinnerValues(currentUnit, oldUnit, fullRotationCount, 60);
+        return GetUpdatedClockSpinnerValues(currentUnit, oldUnit, fullRotationCount, 86400);
     }
 
     private (string, int) GetUpdatedClockSpinnerValues(int currentUnit, int oldUnit, int fullRotationCount, int maxUnits)
@@ -106,14 +94,9 @@
         var degreeValue = unit * (360f  /  unitsInRotation);
         return $"{degreeValue}deg";
     }
-    private string GetRotationValueFromSixtieth(float unit)
-    {
-        return GetRotationValueFromUnit(unit, 60);
-    }
 
     protected override void OnInitialized()
     {
-        // TODO: Prevent animation when setting up, then enable once done
         hideAnimations = true;
         Tick(this);
         StateHasChanged();
