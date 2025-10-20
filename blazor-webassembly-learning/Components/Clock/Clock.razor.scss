@@ -2,12 +2,16 @@
 //  --minute-rotation: 0deg;
 //}
 
-
 ul {
   list-style: none;
 }
 
 .clock {
+  font-family: "Chivo Mono", monospace;
+  font-optical-sizing: auto;
+  font-weight: normal;
+  font-style: normal;
+  
   aspect-ratio: 1;
   width: 50%;
   background-color: gray;
@@ -19,7 +23,7 @@ ul {
   
 } 
 
-.clock .second-face, .clock .minute-face, .clock .hour-face {
+.clock * {
   grid-row: 1;
   grid-column: 1;
   //align-self: center;
@@ -50,18 +54,31 @@ ul {
 @mixin medium-clock-element {
   width: 40%;
 }
+
+$inner-face-diameter: 30%;
+
+.clock-hand-separator {
+  z-index: 4;
+  width: 100%;
+  aspect-ratio: 1;
+  // TODO
+  background-image: radial-gradient(
+                  black 16.66%, transparent 0, transparent 100%
+  );
+}
+
 // TODO: Decouple element sizing from parent - look into removing clock element?
 .clock-circular-face {
     @include small-clock-element;
   
     border-radius: 100%;
-    background-color: black;
+    background-color: rgb(20, 20, 20);
     //background-image: conic-gradient(black, white);
   
   aspect-ratio: 1;
   //width: 50%;
 
-    width: 30%;
+    width: $inner-face-diameter;
     //height: 50%;
     //transform: rotate(0deg);
 }
@@ -80,13 +97,13 @@ ul {
 }
 
 .block-clock-face div {
-  width: 2.5%;
+  width: 1.25%;
   height: 100%;
   //background-color: black;
   background-image: linear-gradient(
-                  0deg, transparent 25%, 
+                  0deg, transparent 15%, 
                   white 0, white 50%, 
-                  black 0, black 75%, 
+                  black 0, black 85%, 
                   white 0, white 100%
   );
 }
@@ -103,6 +120,12 @@ $number-width: 25%;
   position: absolute;
   text-align: center;
   width: $number-width; 
+  aspect-ratio: 1;
+  align-content: center;
+  justify-content: center;
+
+  color: white;
+  font-size: 0.75vw;
 }
 
 @mixin place-clock-labels ($clock-name, $label-count: 12, $label-width: 20%, $circle-radius: 45%, $relative-label-rotation: false) {
@@ -110,18 +133,18 @@ $number-width: 25%;
     .clock-#{$clock-name} ul li:nth-child(#{$i}){
       /* Find where in the circle to place the element, Circle radius and constant offset */
       bottom: calc(((
-      
-      cos(pi / (#{$label-count} / 2) 
-      
-            * (#{$i})) * #{$circle-radius})
-      
+
+      cos(pi / (#{$label-count} / 2)
+
+      * (#{$i})) * #{$circle-radius})
+
       + (50% - 0.5em)));
-      
+
       left: calc(((
-      sin(pi / (#{$label-count} / 2) 
-            * (#{$i})) * #{$circle-radius})
+      sin(pi / (#{$label-count} / 2)
+      * (#{$i})) * #{$circle-radius})
       + (50% - (#{$label-width} / 2))));
-      
+
       @if ($relative-label-rotation != false) {
         transform: rotate(calc((calc(360deg / #{$label-count}) * #{$i}) + #{$relative-label-rotation}));
       }
@@ -130,16 +153,44 @@ $number-width: 25%;
   }
 }
 
-@include place-clock-labels(circular-face, 12, $number-width, 45%, 180deg);
 
-@for $i from 1 through 12 {
-  .clock-circular-face ul li:nth-child(#{$i}){
-    color: white;
-    @if($i % 3 == 0) {
-      font-size: 13px;
-    } @else {
-      font-size: 10px;
+// TODO: Look through and clean up plament CSS
+@mixin place-inverted-clock-labels($clock-name, $label-count: 12, $label-width: 20%, $circle-radius: 45%, $relative-label-rotation: false) {
+  @for $i from 1 through $label-count {
+    .clock-#{$clock-name} ul li:nth-child(#{$i}){
+      /* Find where in the circle to place the element, Circle radius and constant offset */
+      /* 1 degree offset for placement */
+      bottom: calc(((
+
+      (cos((pi / (#{$label-count} / 2)) 
+      
+            * (#{$i})) * #{$circle-radius}) * -1)
+      
+      + (50% - (#{$label-width} / 2))));
+      
+      left: calc(((
+      (sin((pi / (#{$label-count} / 2)) 
+            * (#{$i})) * #{$circle-radius}) * -1)
+      + (50% - (#{$label-width} / 2))));
+      
+      @if ($relative-label-rotation != false) {
+        transform: rotate(calc((calc(360deg / #{$label-count}) * #{$i}) + #{$relative-label-rotation} + 180deg));
+      }
+
     }
-
   }
 }
+
+@include place-inverted-clock-labels(circular-face, 12, $number-width, 45%, 180deg);
+
+//@for $i from 1 through 12 {
+//  .clock-circular-face ul li:nth-child(#{$i}){
+//    color: white;
+//    @if($i % 3 == 0) {
+//      font-size: 13px;
+//    } @else {
+//      font-size: 10px;
+//    }
+//
+//  }
+//}
