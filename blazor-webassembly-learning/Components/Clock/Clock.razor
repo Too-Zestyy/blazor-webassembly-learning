@@ -8,24 +8,24 @@
             class="minute-face clock-circular-face@(hideAnimations ? " no-transition" : "")"
             style="transform: rotate(@curSecondRotation)">
             <ul>
-                @* @for (var i = 12; i >= 1; i--) *@
-                @* { *@
-                @*     var elementText = i * 5; *@
-                @*     <li>@elementText.ToString("D2")</li> *@
-                @* *@
-                @* } *@
-                <li>55</li>
-                <li>50</li>
-                <li>45</li>
-                <li>40</li>
-                <li>35</li>
-                <li>30</li>
-                <li>25</li>
-                <li>20</li>
-                <li>15</li>
-                <li>10</li>
-                <li>05</li>
-                <li>60</li>
+                @for (var i = 1; i <= 12; i++)
+                {
+                    var elementText = i * 5;
+                    <li>@elementText.ToString("D2")</li>
+                
+                }
+                @* <li>55</li> *@
+                @* <li>50</li> *@
+                @* <li>45</li> *@
+                @* <li>40</li> *@
+                @* <li>35</li> *@
+                @* <li>30</li> *@
+                @* <li>25</li> *@
+                @* <li>20</li> *@
+                @* <li>15</li> *@
+                @* <li>10</li> *@
+                @* <li>05</li> *@
+                @* <li>60</li> *@
             </ul>
         </div>
         <div class="hour-face block-clock-face@(hideAnimations ? " no-transition" : "")"

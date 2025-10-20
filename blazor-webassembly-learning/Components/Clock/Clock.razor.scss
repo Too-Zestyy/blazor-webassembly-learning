@@ -130,6 +130,7 @@ $number-width: 25%;
 
 @mixin place-clock-labels ($clock-name, $label-count: 12, $label-width: 20%, $circle-radius: 45%, $relative-label-rotation: false) {
   @for $i from 1 through $label-count {
+    
     .clock-#{$clock-name} ul li:nth-child(#{$i}){
       /* Find where in the circle to place the element, Circle radius and constant offset */
       bottom: calc(((
@@ -154,25 +155,31 @@ $number-width: 25%;
 }
 
 
-// TODO: Look through and clean up plament CSS
 @mixin place-inverted-clock-labels($clock-name, $label-count: 12, $label-width: 20%, $circle-radius: 45%, $relative-label-rotation: false) {
   @for $i from 1 through $label-count {
-    .clock-#{$clock-name} ul li:nth-child(#{$i}){
+
+    // Place from last item to first, effectively transposing the labels
+    $li-index: ($label-count - $i);
+    @if($li-index == 0) {
+      $li-index: $label-count;
+    }
+    
+    .clock-#{$clock-name} ul li:nth-child(#{$li-index}){
       /* Find where in the circle to place the element, Circle radius and constant offset */
       /* 1 degree offset for placement */
       bottom: calc(((
 
       (cos((pi / (#{$label-count} / 2)) 
-      
+
             * (#{$i})) * #{$circle-radius}) * -1)
-      
+
       + (50% - (#{$label-width} / 2))));
-      
+
       left: calc(((
       (sin((pi / (#{$label-count} / 2)) 
             * (#{$i})) * #{$circle-radius}) * -1)
       + (50% - (#{$label-width} / 2))));
-      
+
       @if ($relative-label-rotation != false) {
         transform: rotate(calc((calc(360deg / #{$label-count}) * #{$i}) + #{$relative-label-rotation} + 180deg));
       }
