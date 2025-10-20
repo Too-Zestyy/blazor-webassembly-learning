@@ -12,20 +12,7 @@
                 {
                     var elementText = i * 5;
                     <li>@elementText.ToString("D2")</li>
-                
                 }
-                @* <li>55</li> *@
-                @* <li>50</li> *@
-                @* <li>45</li> *@
-                @* <li>40</li> *@
-                @* <li>35</li> *@
-                @* <li>30</li> *@
-                @* <li>25</li> *@
-                @* <li>20</li> *@
-                @* <li>15</li> *@
-                @* <li>10</li> *@
-                @* <li>05</li> *@
-                @* <li>60</li> *@
             </ul>
         </div>
         <div class="hour-face block-clock-face@(hideAnimations ? " no-transition" : "")"
@@ -44,8 +31,8 @@
     string curHourRotation = "0deg";
 
     int lastSecond = 0;
-    int lastMinute = 0;
-    int lastHour = 0;
+    int lastMinuteInSeconds = 0;
+    int lastHourInSeconds = 0;
 
     int fullSecondTurns = 0;
     int fullMinuteTurns = 0;
@@ -56,25 +43,31 @@
     private void UpdateAbsoluteClockRotation()
     {
         var curTime = DateTime.Now;
+
+        var curSecondValue = curTime.Second;
+        var curMinuteInSeconds = curTime.Minute * 60 + curTime.Second;
+        var curHourInSeconds = curTime.Hour * 3600 + curTime.Minute * 60 + curTime.Second;
         
         (curSecondRotation, fullSecondTurns) = GetUpdatedSecondSpinnerValues(
-            curTime.Second, 
+            curSecondValue, 
             lastSecond, 
             fullSecondTurns
             );
         
         (curMinuteRotation, fullMinuteTurns) = GetUpdatedMinuteSpinnerValues(
-            curTime.Minute * 60 + curTime.Second, 
-            lastMinute, 
+            curMinuteInSeconds, 
+            lastMinuteInSeconds, 
             fullMinuteTurns
             );
         (curHourRotation, fullHourTurns) = GetUpdatedHourSpinnerValues(
-            curTime.Hour * 3600 + curTime.Minute * 60 + curTime.Second, 
-            lastMinute, 
+            curHourInSeconds, 
+            lastMinuteInSeconds, 
             fullMinuteTurns
         );
 
-        lastSecond = curTime.Second;
+        lastSecond = curSecondValue;
+        lastMinuteInSeconds = curMinuteInSeconds;
+        lastHourInSeconds = curHourInSeconds;
     }
     
     private (string, int) GetUpdatedSecondSpinnerValues(int currentUnit, int oldUnit, int fullRotationCount)

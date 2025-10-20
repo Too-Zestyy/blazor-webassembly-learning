@@ -57,13 +57,17 @@ ul {
 
 $inner-face-diameter: 30%;
 
+$clock-hand-separator-colour: rgba(0, 0, 0, 50%);
+
 .clock-hand-separator {
   z-index: 4;
   width: 100%;
   aspect-ratio: 1;
   // TODO
   background-image: radial-gradient(
-                  black 16.66%, transparent 0, transparent 100%
+                  $clock-hand-separator-colour 16.66%, 
+                  transparent 0, transparent 30%,
+                  $clock-hand-separator-colour 0, $clock-hand-separator-colour 100%
   );
 }
 
@@ -158,7 +162,7 @@ $number-width: 25%;
 @mixin place-inverted-clock-labels($clock-name, $label-count: 12, $label-width: 20%, $circle-radius: 45%, $relative-label-rotation: false) {
   @for $i from 1 through $label-count {
 
-    // Place from last item to first, effectively transposing the labels
+    // Place from second to last item to first, looping back to the final item to be placed last
     $li-index: ($label-count - $i);
     @if($li-index == 0) {
       $li-index: $label-count;
