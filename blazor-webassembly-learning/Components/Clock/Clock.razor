@@ -28,50 +28,26 @@
 @code {
     
     Timer updateTimer;
+    
+    bool hideAnimations;
 
     string curSecondRotation = "0deg";
     string curMinuteRotation = "0deg";
     string curHourRotation = "0deg";
-
-
-    int lastSecond = 0;
-    int lastMinuteInSeconds = 0;
-    int lastHourInSeconds = 0;
-
-    int fullSecondTurns = 0;
-    int fullMinuteTurns = 0;
-    int fullHourTurns = 0;
     
-    bool hideAnimations = true;
+    DateTime initTime = DateTime.Now;
+
+    ClockFaceRotationValue secondsRotationManager = ClockRotationFactory.BuildSecondsRotationManagerFromNow();
+    ClockFaceRotationValue minutesRotationManager = ClockRotationFactory.BuildMinutesRotationManagerFromNow();
+    ClockFaceRotationValue hoursRotationManager = ClockRotationFactory.BuildHoursRotationManagerFromNow();
 
     private void UpdateAbsoluteClockRotation()
     {
         var curTime = DateTime.Now;
 
-        var curSecondValue = curTime.Second;
-        var curMinuteInSeconds = curTime.Minute * 60 + curTime.Second;
-        var curHourInSeconds = curTime.Hour * 3600 + curTime.Minute * 60 + curTime.Second;
-        
-        (curSecondRotation, fullSecondTurns) = GetUpdatedSecondSpinnerValues(
-            curSecondValue, 
-            lastSecond, 
-            fullSecondTurns
-            );
-        
-        (curMinuteRotation, fullMinuteTurns) = GetUpdatedMinuteSpinnerValues(
-            curMinuteInSeconds, 
-            lastMinuteInSeconds, 
-            fullMinuteTurns
-            );
-        (curHourRotation, fullHourTurns) = GetUpdatedHourSpinnerValues(
-            curHourInSeconds, 
-            lastMinuteInSeconds, 
-            fullMinuteTurns
-        );
-
-        lastSecond = curSecondValue;
-        lastMinuteInSeconds = curMinuteInSeconds;
-        lastHourInSeconds = curHourInSeconds;
+        curSecondRotation = secondsRotationManager.GetCurrentCssValue();
+        curMinuteRotation = minutesRotationManager.GetCurrentCssValue();
+        curHourRotation = hoursRotationManager.GetCurrentCssValue();
     }
     
     private (string, int) GetUpdatedSecondSpinnerValues(int currentUnit, int oldUnit, int fullRotationCount)
