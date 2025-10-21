@@ -1,4 +1,4 @@
-﻿@using System.Diagnostics
+﻿@using blazor
 <div>
     <h3>Clock</h3>
 
@@ -23,12 +23,18 @@
     </div>
 </div>
 
-@code {  
+
+
+@code {
+    
     Timer updateTimer;
+
+    // ClockFaceRotation secondRotation = new ClockFaceRotation(0, 60, 0);
 
     string curSecondRotation = "0deg";
     string curMinuteRotation = "0deg";
     string curHourRotation = "0deg";
+
 
     int lastSecond = 0;
     int lastMinuteInSeconds = 0;
