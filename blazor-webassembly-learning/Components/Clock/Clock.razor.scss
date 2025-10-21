@@ -63,7 +63,7 @@ $clock-hand-separator-colour: rgba(0, 0, 0, 50%);
   z-index: 4;
   width: 100%;
   aspect-ratio: 1;
-  // TODO: Complete gradient to match glass cover on watch
+  // TODO: Complete gradient to match glass cover on watch 
   background-image: radial-gradient(
                   $clock-hand-separator-colour 16.66%, 
                   transparent 0, transparent 30%,
