@@ -52,10 +52,10 @@ public abstract class ClockFaceRotationValue
 
     public int GetTotalRotationIncrementsForTime(DateTime time)
     {
-        TimeSpan delta = time - EpochTime;
+        var delta = time - EpochTime;
         
         // Throw error if the clock has run long enough to be outside the 32-bit int range
-        int totalWholeSeconds = Convert.ToInt32(Math.Floor(delta.TotalSeconds)) + EpochOffset;
+        var totalWholeSeconds = Convert.ToInt32(Math.Floor(delta.TotalSeconds)) + EpochOffset;
         
         return totalWholeSeconds;
         
