@@ -59,9 +59,12 @@ $inner-face-diameter: 30%;
 
 $clock-hand-separator-colour: rgba(0, 0, 0, 100%);
 
+$clock-case-colour: lightgrey;
+
 .clock-hand-separator {
   z-index: 4;
   width: 100%;
+  border-radius: 100%;
   aspect-ratio: 1;
   // TODO: Complete gradient to match glass cover on watch  
   background-image: radial-gradient(
@@ -71,7 +74,8 @@ $clock-hand-separator-colour: rgba(0, 0, 0, 100%);
                   transparent 0, transparent 33%,
                   $clock-hand-separator-colour 0, $clock-hand-separator-colour 40%,
                   transparent 0, transparent 47%,
-                  $clock-hand-separator-colour 0, $clock-hand-separator-colour 100%,
+                  $clock-hand-separator-colour 0, $clock-hand-separator-colour 53%,
+                  transparent 0, transparent 100%,
                   
   );
 }
@@ -82,14 +86,10 @@ $clock-hand-separator-colour: rgba(0, 0, 0, 100%);
   
     border-radius: 100%;
     background-color: rgb(20, 20, 20);
-    //background-image: conic-gradient(black, white);
   
   aspect-ratio: 1;
-  //width: 50%;
 
     width: $inner-face-diameter;
-    //height: 50%;
-    //transform: rotate(0deg);
 }
 
 .block-clock-face {
@@ -102,18 +102,17 @@ $clock-hand-separator-colour: rgba(0, 0, 0, 100%);
   width: 100%;
   height: 100%;
   
-  //background-color: green;
 }
 
-.block-clock-face div {
+.block-clock-face .block-clock-hand {
   width: 1.25%;
   height: 100%;
-  //background-color: black;
   background-image: linear-gradient(
                   0deg, transparent 25%, 
                   white 0, white 50%, 
                   black 0, black 75%, 
-                  white 0, white 100%
+                  white 0, white 85%,
+                  transparent 0, transparent 100%
   );
 }
 
