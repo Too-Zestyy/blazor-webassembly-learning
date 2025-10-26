@@ -1,6 +1,17 @@
 ﻿//:root {
 //  --minute-rotation: 0deg;
 //}
+$inner-face-diameter: 30%;
+
+$clock-hand-separator-colour: rgba(0, 0, 0, 100%);
+
+$clock-face-colour: rgb(30, 30, 30);
+
+$clock-backing-colour: rgb(20, 20, 20);
+
+$clock-case-colour: lightgrey;
+
+
 
 ul {
   list-style: none;
@@ -14,14 +25,25 @@ ul {
   
   aspect-ratio: 1;
   width: 50%;
-  background-color: gray;
+  background-color: $clock-backing-colour;
   
   display: grid;
   
   align-items: center;
   justify-items: center;
   
-} 
+  mask: url("img/watch-glass-cover.svg");
+  mask-size: contain;
+  
+  //clip: ;
+  //clip-path: path("m 0.26499999,0.133 a 0.13249999,0.13249999 0 0 1 -0.06625,0.11474836 0.13249999,0.13249999 0 0 1 -0.1325,0 A 0.13249999,0.13249999 0 0 1 0,0.133");
+  
+}
+
+//<path
+// style="fill:#ff00ff;fill-rule:nonzero;stroke-width:4.09708;stroke-dasharray:none"
+//id="path12"
+//d= />
 
 .clock * {
   grid-row: 1;
@@ -55,12 +77,6 @@ ul {
   width: 40%;
 }
 
-$inner-face-diameter: 30%;
-
-$clock-hand-separator-colour: rgba(0, 0, 0, 100%);
-
-$clock-case-colour: lightgrey;
-
 .clock-hand-separator {
   z-index: 4;
   width: 100%;
@@ -85,7 +101,7 @@ $clock-case-colour: lightgrey;
     @include small-clock-element;
   
     border-radius: 100%;
-    background-color: rgb(20, 20, 20);
+    background-color: $clock-face-colour;
   
   aspect-ratio: 1;
 
