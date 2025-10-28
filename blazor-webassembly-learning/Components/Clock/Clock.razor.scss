@@ -17,33 +17,37 @@ ul {
   list-style: none;
 }
 
+.clock-shell {
+  aspect-ratio: 1;
+  width: 50%;
+  background-color: lightgrey;
+  background-image: linear-gradient(0deg, grey, rgb(220, 220, 220));
+  border-radius: 100%;
+}
+
 .clock {
   font-family: "Chivo Mono", monospace;
   font-optical-sizing: auto;
   font-weight: normal;
   font-style: normal;
-  
-  aspect-ratio: 1;
-  width: 50%;
   background-color: $clock-backing-colour;
+  
+  
   
   display: grid;
   
   align-items: center;
   justify-items: center;
   
-  mask: url("img/watch-glass-cover.svg");
-  mask-size: contain;
+  
+  // TODO
+  //mask: url("img/watch-glass-cover-n.svg");
+  //mask-size: contain;
   
   //clip: ;
   //clip-path: path("m 0.26499999,0.133 a 0.13249999,0.13249999 0 0 1 -0.06625,0.11474836 0.13249999,0.13249999 0 0 1 -0.1325,0 A 0.13249999,0.13249999 0 0 1 0,0.133");
   
 }
-
-//<path
-// style="fill:#ff00ff;fill-rule:nonzero;stroke-width:4.09708;stroke-dasharray:none"
-//id="path12"
-//d= />
 
 .clock * {
   grid-row: 1;
@@ -121,7 +125,7 @@ ul {
 }
 
 .block-clock-face .block-clock-hand {
-  width: 1.25%;
+  width: 1%;
   height: 100%;
   background-image: linear-gradient(
                   0deg, transparent 25%, 
@@ -133,13 +137,13 @@ ul {
 }
 
 
-.clock-circular-face ul {
+.clock ul {
   text-align: center;
 }
 
 $number-width: 25%;
 
-.clock-circular-face ul li {
+.clock ul li {
   display: block;
   position: absolute;
   text-align: center;
@@ -152,73 +156,111 @@ $number-width: 25%;
   font-size: 0.75vw;
 }
 
-@mixin place-clock-labels ($clock-name, $label-count: 12, $label-width: 20%, $circle-radius: 45%, $relative-label-rotation: false) {
-  @for $i from 1 through $label-count {
-    
-    .clock-#{$clock-name} ul li:nth-child(#{$i}){
-      /* Find where in the circle to place the element, Circle radius and constant offset */
-      bottom: calc(((
-
-      cos(pi / (#{$label-count} / 2)
-
-      * (#{$i})) * #{$circle-radius})
-
-      + (50% - 0.5em)));
-
-      left: calc(((
-      sin(pi / (#{$label-count} / 2)
-      * (#{$i})) * #{$circle-radius})
-      + (50% - (#{$label-width} / 2))));
-
-      @if ($relative-label-rotation != false) {
-        transform: rotate(calc((calc(360deg / #{$label-count}) * #{$i}) + #{$relative-label-rotation}));
-      }
-
-    }
-  }
+.inner-hour-labels ul {
+  width: 100%;
+  aspect-ratio: 1;
 }
 
+.inner-hour-labels ul li {
+  width: 10%;
+}
 
-@mixin place-inverted-clock-labels($clock-name, $label-count: 12, $label-width: 20%, $circle-radius: 45%, $relative-label-rotation: false) {
+// TODO: Refactor clock placement labels into single mixin with bool for inversion
+
+
+@mixin place-clock-labels($label-count: 12, $label-width: 20%, $circle-radius: 45%, $relative-label-rotation: false, $invert-placement-order: false) {
+  
+  
+  transform: rotate(0deg);
+  
   @for $i from 1 through $label-count {
+    // Guarantee variable existence in a way sass likes
+    $li-index: $i;
 
-    // Place from second to last item to first, looping back to the final item to be placed last
-    $li-index: ($label-count - $i);
-    @if($li-index == 0) {
-      $li-index: $label-count;
+    // When inverted, place from second to last item to first, 
+    // looping back to the final item to be placed last
+    @if ($invert-placement-order == true) {
+      $li-index: ($label-count - $i);
+      @if ($li-index == 0) {
+        $li-index: $label-count;
+      }
+    } 
+    @else {
+      $li-index: $i - $label-count / 2;
+
+      @if ($li-index <= 0) {
+        $li-index: $label-count + $li-index;
+      }
     }
     
-    .clock-#{$clock-name} ul li:nth-child(#{$li-index}){
+    ul li:nth-child(#{$li-index}) {
+      $clock-element-placement-angle: calc((pi / (#{$label-count} / 2)) * (#{$i}));
+      
       /* Find where in the circle to place the element, Circle radius and constant offset */
       /* 1 degree offset for placement */
       bottom: calc(((
-
-      (cos((pi / (#{$label-count} / 2)) 
-
-            * (#{$i})) * #{$circle-radius}) * -1)
+      (cos($clock-element-placement-angle) 
+      * #{$circle-radius}) * -1)
 
       + (50% - (#{$label-width} / 2))));
 
       left: calc(((
-      (sin((pi / (#{$label-count} / 2)) 
-            * (#{$i})) * #{$circle-radius}) * -1)
+      (sin($clock-element-placement-angle) 
+      * #{$circle-radius}) * -1)
+      
       + (50% - (#{$label-width} / 2))));
 
       @if ($relative-label-rotation != false) {
         transform: rotate(calc((calc(360deg / #{$label-count}) * #{$i}) + #{$relative-label-rotation} + 180deg));
       }
-
     }
   }
 }
 
-@include place-inverted-clock-labels(circular-face, 12, $number-width, 45%, 180deg);
+// TODO: Modify mixin usage to explicitly state arg names for readability
+
+.clock-circular-face {
+  @include place-clock-labels(
+                  12, $number-width, 45%, 180deg, true
+  );
+}
+
+.clock-central-hour-labels {
+  @include place-clock-labels(
+                  12, $number-width, 43%, 180deg, false
+  );
+}
+
+
+.central-hour-labels {
+  z-index: 5;
+  
+  width: 60%;
+  aspect-ratio: 1;
+}
+
+//.central-hour-labels ul li {
+//  width: ;
+//}
+
+//.inner-hour-labels, .outer-hour-labels {
+//  z-index: 5;
+//}
+//
+//.inner-hour-labels {
+//  width: 50%;
+//  aspect-ratio: 1;
+//}
+//
+//
+//
+//@include place-inverted-clock-labels(inner-hour-labels, 6, 2%, 10%, 180deg);
 
 //@for $i from 1 through 12 {
 //  .clock-circular-face ul li:nth-child(#{$i}){
 //    color: white;
 //    @if($i % 3 == 0) {
-//      font-size: 13px;
+//      font-size: 13px; 
 //    } @else {
 //      font-size: 10px;
 //    }

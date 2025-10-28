@@ -1,26 +1,50 @@
 ﻿@using blazor
 <div>
     <h3>Clock</h3>
-
-    <div class="clock">
-        <div class="clock-hand-separator"></div>
-        <div
-            class="minute-face clock-circular-face@(hideAnimations ? " no-transition" : "")"
-            style="transform: rotate(@curSecondRotation)">
-            <ul>
-                @for (var i = 1; i <= 12; i++)
-                {
-                    var elementText = i * 5;
-                    <li>@elementText.ToString("D2")</li>
-                }
-            </ul>
+    
+    <div class="clock-shell">
+        <div class="clock">
+            <div class="clock-hand-separator"></div>
+            <div
+                class="minute-face clock-circular-face@(hideAnimations ? " no-transition" : "")"
+                style="transform: rotate(@curSecondRotation)">
+                <ul>
+                    @for (var i = 1; i <= 12; i++)
+                    {
+                        var elementText = i * 5;
+                        <li>@elementText.ToString("D2")</li>
+                    }
+                </ul>
+            </div>
+            <div class="central-hour-labels clock-central-hour-labels"
+                 style="background-color: transparent;">
+                <ul>
+                    @for (var i = 1; i <= 12; i++)
+                    {
+                        <li>@i</li>
+                    }
+                </ul>
+            </div>
+            @* TODO: Outer hour labels *@
+            @* <div class="inner-hour-labels clock-inner-hour-labels"> *@
+            @*     <ul> *@
+            @*         @for (var i = 1; i <= 6; i++) *@
+            @*         { *@
+            @*             <li>@i</li> *@
+            @*         } *@
+            @*     </ul> *@
+            @* </div> *@
+            
+            
+            
+            <div class="hour-face block-clock-face@(hideAnimations ? " no-transition" : "")"
+                 style="transform: rotate(@curMinuteRotation)">
+                <div class="block-clock-hand"></div></div>
+            @* <div class="hour-face circular-clock-face@(hideAnimations ? " no-transition" : "")" *@
+            @*      style="transform: rotate(@curHourRotation)"></div> *@
         </div>
-        <div class="hour-face block-clock-face@(hideAnimations ? " no-transition" : "")"
-             style="transform: rotate(@curMinuteRotation)">
-            <div class="block-clock-hand"></div></div>
-        @* <div class="hour-face circular-clock-face@(hideAnimations ? " no-transition" : "")" *@
-        @*      style="transform: rotate(@curHourRotation)"></div> *@
     </div>
+    
 </div>
 
 
