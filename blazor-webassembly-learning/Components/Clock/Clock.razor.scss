@@ -19,7 +19,7 @@ ul {
 
 .clock-shell {
   aspect-ratio: 1;
-  width: 50%;
+  width: 33%;
   background-color: lightgrey;
   background-image: linear-gradient(0deg, grey, rgb(220, 220, 220));
   border-radius: 100%;
@@ -148,7 +148,7 @@ $number-width: 25%;
   justify-content: center;
 
   color: white;
-  font-size: 0.75vw;
+  font-size: 0.66vw;
 }
 
 .inner-hour-labels ul {
@@ -247,7 +247,7 @@ $number-width: 25%;
 }
 
 .central-hour-labels ul li, .outer-hour-labels ul li {
-  font-size: 1.2vw;
+  font-size: 1vw;
 }
 
 .clock-central-hour-labels {
