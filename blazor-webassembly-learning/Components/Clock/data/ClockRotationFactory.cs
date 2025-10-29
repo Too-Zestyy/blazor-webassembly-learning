@@ -29,13 +29,13 @@ static class ClockRotationFactory
         return BuildMinutesRotationManager(DateTime.Now);
     }
     
-    public static ClockFaceRotationValue BuildHoursRotationManager(DateTime epoch)
+    public static ClockFaceRotationValue BuildTwelveHoursRotationManager(DateTime epoch)
     {
-        return new HoursRotationValue(epoch);
+        return new TwelveHoursRotationValue(epoch);
     }
     public static ClockFaceRotationValue BuildHoursRotationManagerFromNow()
     {
-        return BuildHoursRotationManager(DateTime.Now);
+        return BuildTwelveHoursRotationManager(DateTime.Now);
     }
     
 }

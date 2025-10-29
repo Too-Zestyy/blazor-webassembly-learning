@@ -1,6 +1,6 @@
 ﻿namespace blazor;
 
-public class HoursRotationValue : ClockFaceRotationValue
+public class TwelveHoursRotationValue : ClockFaceRotationValue
 {
     protected override int GetEpochOffset()
     {
@@ -9,9 +9,9 @@ public class HoursRotationValue : ClockFaceRotationValue
                + (EpochTime.Hour * 3600);
     }
     
-    public HoursRotationValue(DateTime epochTime)
+    public TwelveHoursRotationValue(DateTime epochTime)
     {
-        MaxRotationIncrement = 86400;
+        MaxRotationIncrement = 43200;
         
         EpochTime = epochTime;
         EpochOffset = GetEpochOffset();

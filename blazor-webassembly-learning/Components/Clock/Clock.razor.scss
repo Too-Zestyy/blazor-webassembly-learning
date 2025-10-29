@@ -41,12 +41,8 @@ ul {
   
   
   // TODO
-  //mask: url("img/watch-glass-cover-n.svg");
-  //mask-size: contain;
-  
-  //clip: ;
-  //clip-path: path("m 0.26499999,0.133 a 0.13249999,0.13249999 0 0 1 -0.06625,0.11474836 0.13249999,0.13249999 0 0 1 -0.1325,0 A 0.13249999,0.13249999 0 0 1 0,0.133");
-  
+  mask: url("img/watch-glass-cover.svg");
+  mask-size: contain;
 }
 
 .clock * {
@@ -90,12 +86,11 @@ ul {
   background-image: radial-gradient(
                   $clock-hand-separator-colour 17%, 
                   transparent 0, transparent 21%,
-                  $clock-hand-separator-colour 0, $clock-hand-separator-colour 27%,
-                  transparent 0, transparent 33%,
-                  $clock-hand-separator-colour 0, $clock-hand-separator-colour 40%,
-                  transparent 0, transparent 47%,
-                  $clock-hand-separator-colour 0, $clock-hand-separator-colour 53%,
-                  transparent 0, transparent 100%,
+                  $clock-hand-separator-colour 0, $clock-hand-separator-colour 29%,
+                  transparent 0, transparent 41.5%,
+                  $clock-hand-separator-colour 0, $clock-hand-separator-colour 48.5%,
+                  transparent 0, transparent 61%,
+                  $clock-hand-separator-colour 0, $clock-hand-separator-colour 100%,
                   
   );
 }
@@ -128,10 +123,10 @@ ul {
   width: 1%;
   height: 100%;
   background-image: linear-gradient(
-                  0deg, transparent 25%, 
+                  180deg, transparent 20%, 
                   white 0, white 50%, 
-                  black 0, black 75%, 
-                  white 0, white 85%,
+                  black 0, black 80%, 
+                  white 0, white 95%,
                   transparent 0, transparent 100%
   );
 }
@@ -168,10 +163,21 @@ $number-width: 25%;
 // TODO: Refactor clock placement labels into single mixin with bool for inversion
 
 
-@mixin place-clock-labels($label-count: 12, $label-width: 20%, $circle-radius: 45%, $relative-label-rotation: false, $invert-placement-order: false) {
+/// Mixin to place items on a circle
+/// @author Violet Steers
+/// @param {Integer} $label-count - Number of items on the circle
+/// @param {Length} $label-width - The width of the elements to be placed on the circle (all elements are expected to have identical widths)
+/// @param {Length} $circle-diameter - The diameter of the circle to place elements along the perimeter of
+/// @param {Boolean} $relative-label-rotation - Rotates each element relative to its point along the circle's perimeter
+/// @param {Boolean} $invert-placement-order - places elements in the opposite direction as normal. Useful when 
+///    the point to read a clock face is denoted by a certain point, with the face rotating to move the correct figure into view.
+/// @param {Angle} $placement-angle-offset - The point at which elements begin to be placed from.
+@mixin place-clock-labels($label-count: 12, $label-width: 20%, $circle-diameter: 45%, 
+                          $relative-label-rotation: false, $invert-placement-order: false,
+                          $placement-angle-offset: 0deg) {
   
   
-  transform: rotate(0deg);
+  transform: rotate($placement-angle-offset);
   
   @for $i from 1 through $label-count {
     // Guarantee variable existence in a way sass likes
@@ -200,13 +206,13 @@ $number-width: 25%;
       /* 1 degree offset for placement */
       bottom: calc(((
       (cos($clock-element-placement-angle) 
-      * #{$circle-radius}) * -1)
+      * #{$circle-diameter}) * -1)
 
       + (50% - (#{$label-width} / 2))));
 
       left: calc(((
       (sin($clock-element-placement-angle) 
-      * #{$circle-radius}) * -1)
+      * #{$circle-diameter}) * -1)
       
       + (50% - (#{$label-width} / 2))));
 
@@ -225,45 +231,33 @@ $number-width: 25%;
   );
 }
 
-.clock-central-hour-labels {
-  @include place-clock-labels(
-                  12, $number-width, 43%, 180deg, false
-  );
-}
-
-
 .central-hour-labels {
   z-index: 5;
   
+  //font-family: "Encode Sans Condensed", sans-serif;
+  //font-style: normal;
+
   width: 60%;
   aspect-ratio: 1;
 }
 
-//.central-hour-labels ul li {
-//  width: ;
-//}
+.outer-hour-labels {
+  @extend .central-hour-labels;
+  width: 100%;
+}
 
-//.inner-hour-labels, .outer-hour-labels {
-//  z-index: 5;
-//}
-//
-//.inner-hour-labels {
-//  width: 50%;
-//  aspect-ratio: 1;
-//}
-//
-//
-//
-//@include place-inverted-clock-labels(inner-hour-labels, 6, 2%, 10%, 180deg);
+.central-hour-labels ul li, .outer-hour-labels ul li {
+  font-size: 1.2vw;
+}
 
-//@for $i from 1 through 12 {
-//  .clock-circular-face ul li:nth-child(#{$i}){
-//    color: white;
-//    @if($i % 3 == 0) {
-//      font-size: 13px; 
-//    } @else {
-//      font-size: 10px;
-//    }
-//
-//  }
-//}
+.clock-central-hour-labels {
+  @include place-clock-labels(
+                  12, $number-width, 53.25%, 180deg, false, 0deg
+  );
+}
+
+.clock-outer-hour-labels {
+  @include place-clock-labels(
+                  12, $number-width, 46%, 180deg, false, 180deg
+  );
+}
